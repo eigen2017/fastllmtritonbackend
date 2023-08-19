@@ -1,23 +1,23 @@
 # triton backend for fastllm
-fastllm is a large language model inference speeding up solution
-this repo is integration of fastllm and triton backend, just like fastertransformer triton backend
-this repo is also a good example for how to develop a triton c++ custom backend, with string in and string out, 
-and how to use triton dynamic batch support
+fastllm is a large language model inference speeding up solution<br>
+this repo is integration of fastllm and triton backend, just like fastertransformer triton backend<br>
+this repo is also a good example for how to develop a triton c++ custom backend, with string in and string out, <br>
+and how to use triton dynamic batch support<br>
 
 ## build
 ### 1. download dependencies
-download these repos to local folder
-https://github.com/triton-inference-server/backend
-https://github.com/triton-inference-server/core
-https://github.com/triton-inference-server/common
-https://github.com/ztxz16/fastllm
+download these repos to local folder<br>
+https://github.com/triton-inference-server/backend<br>
+https://github.com/triton-inference-server/core<br>
+https://github.com/triton-inference-server/common<br>
+https://github.com/ztxz16/fastllm<br>
 
 ### 2. build fastllm
 build fastllm, see fastllm readme and you can get a lib file: libfastllm.so
 
 ### 3. modify my CMakeLists.txt
-open CMakeLists.txt of this repo, modify:
-1. modify SOURCE_DIR field to the local path where you downloaded.
+open CMakeLists.txt of this repo, modify:<br>
+1. modify SOURCE_DIR field to the local path where you downloaded.<br>
 FetchContent_Declare(
     repo-common
     PREFIX repo-common
@@ -34,7 +34,7 @@ FetchContent_Declare(
     SOURCE_DIR ../../backend-main
 )
 
-2. modify /models/glm/fastllm-master/build/libfastllm.so to where you build fastllm libfastllm.so
+2. modify /models/glm/fastllm-master/build/libfastllm.so to where you build fastllm libfastllm.so<br>
 target_link_libraries(
     triton_glmbackend
     PRIVATE
@@ -46,12 +46,12 @@ target_link_libraries(
 )
 
 ### 4. build my repo
-cd to-my-repo-root-path
-mkdir build
-cd build
-cmake -DCMAKE_INSTALL_PREFIX:PATH=`pwd`/install .. -Wno-dev
-make install
-then you will get file: libtriton_glmbackend.so
+cd to-my-repo-root-path<br>
+mkdir build<br>
+cd build<br>
+cmake -DCMAKE_INSTALL_PREFIX:PATH=`pwd`/install .. -Wno-dev<br>
+make install<br>
+then you will get file: libtriton_glmbackend.so<br>
 
 ## deploy to triton inference server
 cd to-triton-inference-server-repository-path
