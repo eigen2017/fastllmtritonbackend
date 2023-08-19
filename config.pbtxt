@@ -1,0 +1,38 @@
+
+backend: "glmbackend"
+max_batch_size: 8
+
+dynamic_batching {
+    max_queue_delay_microseconds: 50000
+}
+
+input [
+    {
+        name: "PROMPT"
+        data_type: TYPE_STRING
+        dims: [1]
+    }
+]
+
+input [
+    {
+        name: "RESPONSE_LIMIT"
+        data_type: TYPE_INT32
+        dims: [1]
+    }
+]
+
+output [
+    {
+        name: "RESPONSE"
+        data_type: TYPE_STRING
+        dims: [1]
+    }
+]
+
+instance_group [
+    {
+        count: 1
+        kind: KIND_CPU
+    }
+]
