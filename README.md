@@ -1,5 +1,5 @@
 # triton backend for fastllm
-fastllm is a large language model inference speeding up solution<br>
+fastllm is a large language model inference speeding up solution  
 this repo is integration of fastllm and triton backend, just like fastertransformer triton backend<br>
 this repo is also a good example for how to develop a triton c++ custom backend, with string in and string out, <br>
 and how to use triton dynamic batch support<br>
