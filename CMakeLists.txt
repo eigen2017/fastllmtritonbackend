@@ -42,16 +42,16 @@ target_include_directories(
     triton_glmbackend
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
-    /models/glm/fastllm-master/include
-    /models/glm/fastllm-master/include/utils
-    /models/glm/fastllm-master/include/models
-    /models/glm/fastllm-master/include/devices/cuda
+    /fastllm/include
+    /fastllm/include/utils
+    /fastllm/include/models
+    /fastllm/include/devices/cuda
 )
 
-target_compile_features(triton_glmbackend PRIVATE cXX_std_11)
+target_compile_features(triton_glmbackend PRIVATE cxx_std_11)
 target_compile_options(
     triton_glmbackend PRIVATE
-    -pthread --std=c++17 -march-native -g
+    -pthread --std=c++17 -march=native -g
 )
 
 target_link_libraries(
@@ -61,7 +61,7 @@ target_link_libraries(
     triton-core-backendapi
     triton-core-serverstub
     triton-backend-utils
-    /models/glm/fastllm-master/build/libfastllm.so
+    /fastllm/build/libfastllm.so
 )
 
 set_target_properties (
@@ -71,5 +71,4 @@ set_target_properties (
     LINK_DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/libtriton_glmbackend.ldscript
     LINK_FLAGS "-Wl,--version-script libtriton_glmbackend.ldscript"
 )
-
 
