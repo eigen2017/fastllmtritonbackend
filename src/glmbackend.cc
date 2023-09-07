@@ -58,7 +58,7 @@ namespace triton::backend::glmbackend
         catch (const BackendModelException &ex)
         {
             RETURN_ERROR_IF_TRUE(
-                ex.err == nullptr, TRITONSERVER_ERROR_INTERNAL,
+                ex.err_ == nullptr, TRITONSERVER_ERROR_INTERNAL,
                 std::string("unexpected nullptr in BackendModelException"));
             RETURN_IF_ERROR(ex.err_);
         }
@@ -81,7 +81,7 @@ namespace triton::backend::glmbackend
         {
             void *vstate;
             RETURN_IF_ERROR(TRITONBACKEND_ModelState(model, &vstate));
-            ModleState *model_state = reinterpret_cast<ModelState *>(vstate);
+            ModelState *model_state = reinterpret_cast<ModelState *>(vstate);
             delete model_state;
             return nullptr;
         }
@@ -137,7 +137,7 @@ namespace triton::backend::glmbackend
             : BackendModelInstance(model_state, triton_model_instance), model_state_(model_state)
         {
             flmCall.reset(new FlmCall());
-            FlmCall->init();
+            flmCall->init();
         }
         ModelState *model_state_;
     };
@@ -155,7 +155,7 @@ namespace triton::backend::glmbackend
         {
             return;
         }
-        sendResp(requests, request_count, getResponseStrs);
+        sendResp(requests, request_count, responseStrs);
     }
 
     bool ModelInstanceState::sendResp(TRITONBACKEND_Request **requests, const uint32_t request_count, std::vector<std::string> &responseStrs)
@@ -177,7 +177,7 @@ namespace triton::backend::glmbackend
             std::vector<int64_t> output_shape;
             output_shape.push_back(1);
             output_shape.push_back(1);
-            RESPOND_ALL_AND_RETURN_FALSE_IF_ERROR(requests, request_count, TRITONBACKEND_ResponseOutput(response, output, "RESPONSE", TRITONSERVER_TYPE_BYTES, output_shape.data(), output_shape.size()));
+            RESPOND_ALL_AND_RETURN_FALSE_IF_ERROR(requests, request_count, TRITONBACKEND_ResponseOutput(response, &output, "RESPONSE", TRITONSERVER_TYPE_BYTES, output_shape.data(), output_shape.size()));
 
             void *output_buffer;
             TRITONSERVER_MemoryType output_memory_type = TRITONSERVER_MEMORY_CPU;
@@ -214,7 +214,7 @@ namespace triton::backend::glmbackend
     {
         if (promptStrs.size() != respLimitInts.size() || promptStrs.size() == 0 || respLimitInts.size() == 0)
         {
-            return fase;
+            return false;
         }
         int output_token_limit = *std::max_element(respLimitInts.begin(), respLimitInts.end());
         std::vector<std::string> promptStrsRound;
@@ -267,7 +267,7 @@ namespace triton::backend::glmbackend
             RESPOND_ALL_AND_RETURN_FALSE_IF_ERROR(requests, request_count, TRITONBACKEND_RequestInput(request, "PROMPT", &prompt));
             RESPOND_ALL_AND_RETURN_FALSE_IF_ERROR(requests, request_count, TRITONBACKEND_RequestInput(request, "RESPONSE_LIMIT", &respLimit));
 
-            const int16_t *promptShape;
+            const int64_t *promptShape;
             uint32_t promptShapeDim;
             uint64_t promptByteCnt;
             RESPOND_ALL_AND_RETURN_FALSE_IF_ERROR(requests, request_count, TRITONBACKEND_InputProperties(prompt, nullptr, nullptr, &promptShape, &promptShapeDim, &promptByteCnt, nullptr));
@@ -324,7 +324,7 @@ namespace triton::backend::glmbackend
         catch (const BackendModelInstanceException &ex)
         {
             RETURN_ERROR_IF_TRUE(
-                ex.err == nullptr, TRITONSERVER_ERROR_INTERNAL,
+                ex.err_ == nullptr, TRITONSERVER_ERROR_INTERNAL,
                 std::string("unexpected nullptr in BackendModelException"));
             RETURN_IF_ERROR(ex.err_);
         }
@@ -341,7 +341,7 @@ namespace triton::backend::glmbackend
             RETURN_IF_ERROR(TRITONBACKEND_ModelInstanceModel(instance, &model));
 
             void *vmodelstate;
-            RETURN_IF_ERROR(TRITONBACKEND_ModelState(model, vmodelstate));
+            RETURN_IF_ERROR(TRITONBACKEND_ModelState(model, &vmodelstate));
             ModelState *model_state = reinterpret_cast<ModelState *>(vmodelstate);
 
             ModelInstanceState *instance_state;
