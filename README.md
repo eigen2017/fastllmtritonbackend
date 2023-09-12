@@ -79,7 +79,7 @@ body:
         {  
             "name": "RESPONSE_LIMIT",  
             "shape": [1,1],  
-            "datatpe":"INT32",  
+            "datatype":"INT32",  
             "data": [2048]  
         }  
     ]  
